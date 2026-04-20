@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuttanawin Janpaosang — Retro AI Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #140018;
+      --bg-soft: #22052b;
+      --panel: rgba(28, 10, 41, 0.82);
+      --panel-solid: #1a0927;
+      --text: #ffeefc;
+      --muted: #d6b6db;
+      --primary: #ff4fd8;
+      --secondary: #8a5cff;
+      --accent: #00f0ff;
+      --line: rgba(255,255,255,0.14);
+      --glow: rgba(255, 79, 216, 0.38);
+      --shadow: rgba(0, 0, 0, 0.45);
+      --hero-grid: rgba(255,255,255,0.08);
+    }
+
+    body[data-theme="aqua"] {
+      --bg: #03151e;
+      --bg-soft: #082532;
+      --panel: rgba(7, 31, 43, 0.84);
+      --panel-solid: #082532;
+      --text: #ecffff;
+      --muted: #a7dfe8;
+      --primary: #00e6ff;
+      --secondary: #53ffa8;
+      --accent: #7ed6ff;
+      --line: rgba(255,255,255,0.14);
+      --glow: rgba(0, 230, 255, 0.30);
+      --hero-grid: rgba(255,255,255,0.06);
+    }
+
+    body[data-theme="sunset"] {
+      --bg: #1a0710;
+      --bg-soft: #2a0d18;
+      --panel: rgba(43, 13, 25, 0.84);
+      --panel-solid: #2d0d19;
+      --text: #fff2e9;
+      --muted: #f4c9b0;
+      --primary: #ff7b54;
+      --secondary: #ffcc33;
+      --accent: #ff4f8b;
+      --line: rgba(255,255,255,0.14);
+      --glow: rgba(255, 123, 84, 0.30);
+      --hero-grid: rgba(255,255,255,0.06);
+    }
+
+    body[data-theme="lime"] {
+      --bg: #0f1507;
+      --bg-soft: #18240a;
+      --panel: rgba(21, 34, 10, 0.84);
+      --panel-solid: #18240a;
+      --text: #f8ffe9;
+      --muted: #d0e5a1;
+      --primary: #c4ff45;
+      --secondary: #4cff8f;
+      --accent: #f7ff8b;
+      --line: rgba(255,255,255,0.14);
+      --glow: rgba(196, 255, 69, 0.24);
+      --hero-grid: rgba(255,255,255,0.06);
+    }
+
+    body[data-theme="amber"] {
+      --bg: #151005;
+      --bg-soft: #26180a;
+      --panel: rgba(33, 20, 6, 0.84);
+      --panel-solid: #26180a;
+      --text: #fff7df;
+      --muted: #e4c890;
+      --primary: #ffbf47;
+      --secondary: #ff8a00;
+      --accent: #ffd978;
+      --line: rgba(255,255,255,0.14);
+      --glow: rgba(255, 191, 71, 0.26);
+      --hero-grid: rgba(255,255,255,0.06);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, var(--glow), transparent 30%),
+        linear-gradient(180deg, var(--bg-soft), var(--bg));
+      font-family: 'VT323', monospace;
+      letter-spacing: 0.02em;
+      overflow-x: hidden;
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(var(--hero-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--hero-grid) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.18;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(rgba(255,255,255,0.025) 50%, rgba(0,0,0,0.03) 50%);
+      background-size: 100% 4px;
+      mix-blend-mode: screen;
+      opacity: 0.14;
+      z-index: 1;
+    }
+
+    .retro-shell {
+      position: relative;
+      z-index: 2;
+    }
+
+    .retro-card {
+      background: var(--panel);
+      border: 2px solid var(--line);
+      box-shadow: 0 0 0 2px rgba(0,0,0,0.25), 10px 10px 0 var(--shadow);
+      backdrop-filter: blur(8px);
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .retro-card:hover {
+      transform: translate(-2px, -2px);
+      border-color: color-mix(in srgb, var(--primary) 55%, white 20%);
+      box-shadow: 0 0 0 2px rgba(0,0,0,0.25), 14px 14px 0 var(--shadow), 0 0 30px var(--glow);
+    }
+
+    .retro-window-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--line);
+      background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 48%, transparent), color-mix(in srgb, var(--accent) 35%, transparent));
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.35);
+    }
+
+    .pixel-title {
+      font-family: 'Press Start 2P', cursive;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      line-height: 1.45;
+    }
+
+    .pixel-tight {
+      font-family: 'Press Start 2P', cursive;
+      line-height: 1.5;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .muted { color: var(--muted); }
+
+    .theme-btn {
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(255,255,255,0.35);
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.35);
+      transition: transform 0.2s ease;
+    }
+    .theme-btn:hover { transform: translate(-1px, -1px); }
+    .theme-btn.active { outline: 2px solid #fff; outline-offset: 2px; }
+
+    .section-label {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .retro-btn {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 11px;
+      line-height: 1.6;
+      border: 2px solid var(--line);
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.30);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .retro-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.34), 0 0 22px var(--glow);
+    }
+
+    .retro-tag {
+      border: 2px solid var(--line);
+      background: color-mix(in srgb, var(--panel-solid) 75%, transparent);
+      padding: 8px 12px;
+      font-size: 18px;
+      line-height: 1;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.25);
+    }
+
+    .nav-link {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--muted);
+      position: relative;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text);
+      text-shadow: 0 0 10px var(--glow);
+    }
+
+    .hero-photo-frame {
+      padding: 12px;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 55%, transparent), color-mix(in srgb, var(--accent) 45%, transparent));
+      border: 2px solid rgba(255,255,255,0.28);
+      box-shadow: 0 0 0 4px rgba(0,0,0,0.2), 12px 12px 0 rgba(0,0,0,0.35), 0 0 36px var(--glow);
+      display: inline-block;
+    }
+
+    .hero-photo {
+      width: 190px;
+      height: 190px;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.18);
+      image-rendering: auto;
+      filter: saturate(1.02) contrast(1.04);
+      display: block;
+    }
+
+    .profile-rail {
+      position: sticky;
+      top: 124px;
+      align-self: flex-start;
+    }
+
+    .theme-inline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 14px;
+      border-left: 2px solid var(--line);
+    }
+
+    .theme-inline-label {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 9px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .stat-box {
+      text-align: center;
+      padding: 28px 18px;
+    }
+
+    .stat-number {
+      font-family: 'Press Start 2P', cursive;
+      font-size: clamp(18px, 2.1vw, 26px);
+      line-height: 1.5;
+      color: var(--primary);
+      text-shadow: 0 0 12px var(--glow);
+    }
+
+    .timeline-line {
+      position: absolute;
+      left: 18px;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--primary), var(--accent), var(--secondary), transparent);
+      box-shadow: 0 0 16px var(--glow);
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 8px;
+      top: 18px;
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--text);
+      background: var(--primary);
+      box-shadow: 0 0 16px var(--glow);
+    }
+
+    .animate-reveal, .animate-reveal-left, .animate-reveal-right {
+      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .animate-reveal { transform: translateY(36px); }
+    .animate-reveal-left { transform: translateX(-36px); }
+    .animate-reveal-right { transform: translateX(36px); }
+    .animate-reveal.visible, .animate-reveal-left.visible, .animate-reveal-right.visible {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    .stagger-1 { transition-delay: .08s; }
+    .stagger-2 { transition-delay: .16s; }
+    .stagger-3 { transition-delay: .24s; }
+    .stagger-4 { transition-delay: .32s; }
+    .stagger-5 { transition-delay: .40s; }
+    .stagger-6 { transition-delay: .48s; }
+
+    .project-image {
+      height: 220px;
+      object-fit: cover;
+      filter: sepia(0.42) contrast(1.12) saturate(0.84) hue-rotate(-10deg);
+      border-bottom: 2px solid var(--line);
+    }
+
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 2px solid var(--line);
+      border-bottom: 2px solid var(--line);
+      background: color-mix(in srgb, var(--panel-solid) 92%, transparent);
+    }
+
+    .marquee-track {
+      white-space: nowrap;
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 18s linear infinite;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    @media (max-width: 768px) {
+      .pixel-title { line-height: 1.7; }
+      .hero-photo { width: 150px; height: 150px; }
+      .retro-btn { font-size: 10px; }
+      .theme-inline {
+        border-left: 0;
+        padding-left: 0;
+      }
+    }
+  </style>
+</head>
+<body data-theme="cyber">
+  <div class="retro-shell">
+    <nav class="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4">
+      <div class="max-w-7xl mx-auto retro-card">
+        <div class="retro-window-bar">
+          <span class="dot" style="background:#ff5f57"></span>
+          <span class="dot" style="background:#febc2e"></span>
+          <span class="dot" style="background:#28c840"></span>
+          <span class="pixel-tight text-[10px]">nj_portfolio.exe</span>
+        </div>
+        <div class="px-4 py-4 flex items-center justify-between gap-4">
+          <a href="#" class="pixel-tight text-[14px] gradient-text">NJ://PORTFOLIO</a>
+          <div class="hidden md:flex items-center gap-6">
+            <a href="#about" class="nav-link">About</a>
+            <a href="#experience" class="nav-link">Experience</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#awards" class="nav-link">Awards</a>
+            <a href="#tools" class="nav-link">Tools</a>
+            <a href="#contact" class="nav-link">Contact</a>
+            <div class="theme-inline">
+              <span class="theme-inline-label">Theme</span>
+              <button class="theme-btn active" data-theme-choice="cyber" style="background:linear-gradient(135deg,#ff4fd8,#00f0ff)"></button>
+              <button class="theme-btn" data-theme-choice="aqua" style="background:linear-gradient(135deg,#00e6ff,#53ffa8)"></button>
+              <button class="theme-btn" data-theme-choice="sunset" style="background:linear-gradient(135deg,#ff7b54,#ff4f8b)"></button>
+              <button class="theme-btn" data-theme-choice="lime" style="background:linear-gradient(135deg,#c4ff45,#4cff8f)"></button>
+              <button class="theme-btn" data-theme-choice="amber" style="background:linear-gradient(135deg,#ffbf47,#ff8a00)"></button>
+            </div>
+          </div>
+          <button id="mobile-menu-btn" class="md:hidden retro-btn px-3 py-2 text-[10px] bg-[color:var(--panel-solid)]">MENU</button>
+        </div>
+        <div id="mobile-menu" class="hidden px-4 pb-4 md:hidden">
+          <div class="grid gap-3">
+            <a href="#about" class="retro-btn px-3 py-3 bg-[color:var(--panel-solid)] text-[10px]">ABOUT</a>
+            <a href="#experience" class="retro-btn px-3 py-3 bg-[color:var(--panel-solid)] text-[10px]">EXPERIENCE</a>
+            <a href="#projects" class="retro-btn px-3 py-3 bg-[color:var(--panel-solid)] text-[10px]">PROJECTS</a>
+            <a href="#awards" class="retro-btn px-3 py-3 bg-[color:var(--panel-solid)] text-[10px]">AWARDS</a>
+            <a href="#tools" class="retro-btn px-3 py-3 bg-[color:var(--panel-solid)] text-[10px]">TOOLS</a>
+            <a href="#contact" class="retro-btn px-3 py-3 bg-[color:var(--panel-solid)] text-[10px]">CONTACT</a>
+          </div>
+          <div class="mt-4 retro-card p-4">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+              <span class="theme-inline-label">Theme</span>
+              <div class="flex flex-wrap gap-3">
+                <button class="theme-btn active" data-theme-choice="cyber" style="background:linear-gradient(135deg,#ff4fd8,#00f0ff)"></button>
+                <button class="theme-btn" data-theme-choice="aqua" style="background:linear-gradient(135deg,#00e6ff,#53ffa8)"></button>
+                <button class="theme-btn" data-theme-choice="sunset" style="background:linear-gradient(135deg,#ff7b54,#ff4f8b)"></button>
+                <button class="theme-btn" data-theme-choice="lime" style="background:linear-gradient(135deg,#c4ff45,#4cff8f)"></button>
+                <button class="theme-btn" data-theme-choice="amber" style="background:linear-gradient(135deg,#ffbf47,#ff8a00)"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="pt-28 md:pt-32">
+      <div class="max-w-[1480px] mx-auto xl:flex xl:items-start xl:gap-6">
+        <aside class="hidden xl:block w-[188px] shrink-0 profile-rail ml-4">
+          <div class="retro-card overflow-hidden">
+            <div class="retro-window-bar">
+              <span class="dot" style="background:#ff5f57"></span>
+              <span class="dot" style="background:#febc2e"></span>
+              <span class="dot" style="background:#28c840"></span>
+              <span class="pixel-tight text-[10px]">profile.cam</span>
+            </div>
+            <div class="p-3 bg-[color:var(--panel-solid)]">
+              <img src="./pic1.jpeg" alt="Profile photo" class="w-full h-[236px] object-cover border-[3px] border-white/20" />
+              <p class="pixel-tight text-[9px] mt-3 gradient-text">PROFILE ONLINE</p>
+            </div>
+          </div>
+        </aside>
+        <div class="min-w-0 flex-1">
+      <section class="px-4 md:px-6 pb-10">
+        <div class="max-w-6xl mx-auto retro-card overflow-hidden">
+          <div class="retro-window-bar">
+            <span class="dot" style="background:#ff5f57"></span>
+            <span class="dot" style="background:#febc2e"></span>
+            <span class="dot" style="background:#28c840"></span>
+            <span class="pixel-tight text-[10px]">home_screen</span>
+          </div>
+          <div class="marquee-wrap">
+            <div class="marquee-track py-3">AI TRANSFORMATION • CUSTOMER OPERATIONS • AI ENABLEMENT • RETRO 90S MODE • PICK YOUR COLOR THEME • </div>
+          </div>
+          <div class="min-h-[calc(100vh-180px)] flex items-center justify-center px-6 py-14 md:px-10 md:py-20">
+            <div class="max-w-5xl mx-auto text-center">
+              <div class="animate-reveal inline-flex items-center gap-2 px-4 py-3 retro-card mb-8 bg-[color:var(--panel-solid)]">
+                <span class="w-3 h-3 bg-[color:var(--secondary)] inline-block"></span>
+                <span class="pixel-tight text-[10px]">AVAILABLE FOR AI TRANSFORMATION ROLES</span>
+              </div>
+
+              <div class="animate-reveal stagger-1 mb-8 flex justify-center xl:hidden">
+                <div class="hero-photo-frame">
+                  <img src="./pic1.jpeg" alt="Profile photo" class="hero-photo" />
+                </div>
+              </div>
+
+              <h1 class="animate-reveal stagger-2 pixel-title text-[28px] md:text-[44px] lg:text-[56px] mb-4 gradient-text">Nuttanawin</h1>
+              <h2 class="animate-reveal stagger-3 pixel-title text-[20px] md:text-[30px] lg:text-[36px] mb-8">Janpaosang</h2>
+              <p class="animate-reveal stagger-4 text-[30px] md:text-[38px] leading-[1.1] muted max-w-3xl mx-auto mb-10">
+                AI Transformation · Customer Operations · AI Enablement<br>
+                <span class="text-[26px] md:text-[34px]">20+ years shaping Thailand's telecom service experience</span>
+              </p>
+
+              <div class="animate-reveal stagger-5 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#contact" class="retro-btn px-6 py-4 bg-[color:var(--primary)] text-black">GET IN TOUCH</a>
+                <a href="#experience" class="retro-btn px-6 py-4 bg-[color:var(--panel-solid)]">VIEW EXPERIENCE</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="px-4 md:px-6 py-8">
+        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div class="retro-card stat-box animate-reveal stagger-1">
+            <div class="stat-number mb-3">20+</div>
+            <div class="pixel-tight text-[9px]">YEARS EXPERIENCE</div>
+          </div>
+          <div class="retro-card stat-box animate-reveal stagger-2">
+            <div class="stat-number mb-3">10</div>
+            <div class="pixel-tight text-[9px]">AWARDS WON</div>
+          </div>
+          <div class="retro-card stat-box animate-reveal stagger-3">
+            <div class="stat-number mb-3">ISO</div>
+            <div class="pixel-tight text-[9px]">18295 CERTIFIED</div>
+          </div>
+          <div class="retro-card stat-box animate-reveal stagger-4">
+            <div class="stat-number mb-3">AI</div>
+            <div class="pixel-tight text-[9px]">TRANSFORMATION LEAD</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="px-4 md:px-6 py-16">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
+          <div class="retro-card animate-reveal overflow-hidden">
+            <div class="retro-window-bar">
+              <span class="dot" style="background:#ff5f57"></span>
+              <span class="dot" style="background:#febc2e"></span>
+              <span class="dot" style="background:#28c840"></span>
+              <span class="pixel-tight text-[10px]">about_me.txt</span>
+            </div>
+            <div class="p-6 md:p-8">
+              <p class="section-label mb-4">About me</p>
+              <h2 class="pixel-title text-[18px] md:text-[28px] mb-6 leading-[1.8]">
+                <span class="gradient-text">Bridging operations</span><br>
+                <span class="gradient-text">& AI for real</span><br>
+                <span>business impact</span>
+              </h2>
+              <p class="text-[30px] leading-[1.05] muted mb-5">
+                Customer operations leader with 20+ years in Thailand's telecom sector. I combine contact-center operations, workflow design, UX/UI thinking, and practical AI adoption to improve service quality, productivity, and operational readiness.
+              </p>
+              <p class="text-[30px] leading-[1.05] muted mb-6">
+                My strength lies in translating real business pain points into workable AI and process solutions — especially for non-technical environments where adoption matters most.
+              </p>
+              <div class="flex flex-wrap gap-3">
+                <span class="retro-tag">Contact-Center Ops</span>
+                <span class="retro-tag">AI Enablement</span>
+                <span class="retro-tag">UX/UI Design</span>
+                <span class="retro-tag">Workflow Design</span>
+                <span class="retro-tag">AI Training</span>
+                <span class="retro-tag">QA & WFM</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-5">
+            <div class="retro-card animate-reveal-left stagger-1 p-6">
+              <h3 class="pixel-tight text-[11px] mb-2 gradient-text">CONTACT-CENTER OPERATIONS</h3>
+              <p class="text-[28px] leading-none muted">SLA management, QA, WFM, vendor coordination, and ISO 18295-aligned service practices</p>
+            </div>
+            <div class="retro-card animate-reveal-left stagger-2 p-6">
+              <h3 class="pixel-tight text-[11px] mb-2 gradient-text">AI OPERATIONS & MONITORING</h3>
+              <p class="text-[28px] leading-none muted">AI agent performance monitoring, quality assurance, project evaluation and acceptance</p>
+            </div>
+            <div class="retro-card animate-reveal-left stagger-3 p-6">
+              <h3 class="pixel-tight text-[11px] mb-2 gradient-text">WORKFLOW & UX/UI DESIGN</h3>
+              <p class="text-[28px] leading-none muted">Process integrations between business systems and contact-center platforms to reduce handle time</p>
+            </div>
+            <div class="retro-card animate-reveal-left stagger-4 p-6">
+              <h3 class="pixel-tight text-[11px] mb-2 gradient-text">AI TOOLS TRAINING</h3>
+              <p class="text-[28px] leading-none muted">Workshops on prompting, AI-assisted content creation, and safe workplace use for non-technical users</p>
+            </div>
+            <div class="retro-card animate-reveal-left stagger-5 p-6">
+              <h3 class="pixel-tight text-[11px] mb-2 gradient-text">CROSS-FUNCTIONAL DELIVERY</h3>
+              <p class="text-[28px] leading-none muted">Bridging operations, business, and technology teams for seamless AI & process adoption</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="experience" class="px-4 md:px-6 py-16">
+        <div class="max-w-6xl mx-auto retro-card overflow-hidden animate-reveal">
+          <div class="retro-window-bar">
+            <span class="dot" style="background:#ff5f57"></span>
+            <span class="dot" style="background:#febc2e"></span>
+            <span class="dot" style="background:#28c840"></span>
+            <span class="pixel-tight text-[10px]">career_log.sys</span>
+          </div>
+          <div class="p-6 md:p-8">
+            <p class="section-label mb-4">Career Journey</p>
+            <h2 class="pixel-title text-[18px] md:text-[28px] mb-10">Professional Experience</h2>
+
+            <div class="relative pl-12 md:pl-16">
+              <div class="timeline-line"></div>
+
+              <div class="animate-reveal stagger-1 relative mb-8">
+                <div class="timeline-dot"></div>
+                <div class="retro-card p-5 md:p-6 ml-4">
+                  <p class="pixel-tight text-[9px] mb-2 gradient-text">CURRENT • 2025 – PRESENT</p>
+                  <h3 class="pixel-tight text-[11px] mb-3">CUSTOMER MANAGEMENT OFFICER</h3>
+                  <p class="text-[28px] leading-none muted mb-4">National Telecom Public Company Limited (NT)</p>
+                  <ul class="text-[28px] leading-none muted space-y-2 list-disc pl-5">
+                    <li>AI agent monitoring, quality assurance, and AI project evaluation / acceptance activities</li>
+                    <li>Review workflow fit, operational feasibility, and vendor deliverables for AI-enabled initiatives</li>
+                    <li>Deliver workshops on practical AI tools — prompting, content creation, and safe-use workflows</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="animate-reveal stagger-2 relative mb-8">
+                <div class="timeline-dot"></div>
+                <div class="retro-card p-5 md:p-6 ml-4">
+                  <p class="pixel-tight text-[9px] mb-2 gradient-text">2022 – 2025</p>
+                  <h3 class="pixel-tight text-[11px] mb-3">MANAGER, CALL CENTER OPERATIONS</h3>
+                  <p class="text-[28px] leading-none muted mb-4">National Telecom Public Company Limited (NT)</p>
+                  <ul class="text-[28px] leading-none muted space-y-2 list-disc pl-5">
+                    <li>Led end-to-end operations: SLA, WFM, QA/monitoring, and vendor coordination</li>
+                    <li>Drove ISO 18295 customer-contact-center practices into daily operations</li>
+                    <li>Designed UX/UI and process integrations to reduce handle time and improve FCR</li>
+                    <li>Built value-add, persuasion, and upsell/cross-sell flows into service interactions</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="animate-reveal stagger-3 relative mb-8">
+                <div class="timeline-dot"></div>
+                <div class="retro-card p-5 md:p-6 ml-4">
+                  <p class="pixel-tight text-[9px] mb-2 gradient-text">2007 – 2022</p>
+                  <h3 class="pixel-tight text-[11px] mb-3">SUPERVISOR, CALL CENTER OPERATIONS</h3>
+                  <p class="text-[28px] leading-none muted mb-4">TOT / NT</p>
+                  <ul class="text-[28px] leading-none muted space-y-2 list-disc pl-5">
+                    <li>Led multi-shift agent teams; coached supervisors; set targets, dashboards, and QA playbooks</li>
+                    <li>Embedded sales-assist scripts and objection-handling routines into service processes</li>
+                    <li>Collaborated with IT teams to improve IVR/ACD usage and reporting workflows</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="animate-reveal stagger-4 relative mb-8">
+                <div class="timeline-dot"></div>
+                <div class="retro-card p-5 md:p-6 ml-4">
+                  <p class="pixel-tight text-[9px] mb-2 gradient-text">2004 – 2007</p>
+                  <h3 class="pixel-tight text-[11px] mb-3">CHIEF OF CALL AGENTS, ONE-TO-ONE CONTACT</h3>
+                  <p class="text-[28px] leading-none muted mb-4">TOT / NT</p>
+                  <ul class="text-[28px] leading-none muted space-y-2 list-disc pl-5">
+                    <li>Frontline leadership, floor management, onboarding, scheduling, and KPI discipline</li>
+                    <li>Rolled out coaching and performance-management routines for new agents</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="animate-reveal stagger-5 relative">
+                <div class="timeline-dot"></div>
+                <div class="retro-card p-5 md:p-6 ml-4">
+                  <p class="pixel-tight text-[9px] mb-2 gradient-text">2008 – 2011</p>
+                  <h3 class="pixel-tight text-[11px] mb-3">GUEST TRAINER / LECTURER</h3>
+                  <p class="text-[28px] leading-none muted mb-4">TOT North and South Call Center</p>
+                  <ul class="text-[28px] leading-none muted space-y-2 list-disc pl-5">
+                    <li>Designed and delivered practitioner training on call-center work practices and operations</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="px-4 md:px-6 py-16">
+        <div class="max-w-6xl mx-auto">
+          <div class="animate-reveal mb-8">
+            <p class="section-label mb-3">Innovation</p>
+            <h2 class="pixel-title text-[18px] md:text-[28px]">AI & Transformation Projects</h2>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="retro-card overflow-hidden animate-reveal stagger-1">
+              <img src="https://source.unsplash.com/900x600/?typewriter,analog,vintage,desk,retro" alt="AI Call Screening" class="project-image w-full">
+              <div class="p-6">
+                <p class="pixel-tight text-[9px] mb-3 gradient-text">PROTOTYPE</p>
+                <h3 class="pixel-tight text-[11px] mb-4">AI CALL SCREENING FOR QA PRIORITIZATION</h3>
+                <p class="text-[28px] leading-none muted mb-4">Designed a privacy-conscious prototype to triage call recordings before manual monitoring. Focused on suspicious audio patterns — prolonged silence, clipping, overlapping voices — with an offline-first approach.</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="retro-tag">Audio Analysis</span>
+                  <span class="retro-tag">Privacy-First</span>
+                  <span class="retro-tag">Offline ML</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="retro-card overflow-hidden animate-reveal stagger-2">
+              <img src="https://source.unsplash.com/900x600/?crt,monitor,vintage,retro,computer,vhs" alt="AI Agent Monitoring" class="project-image w-full">
+              <div class="p-6">
+                <p class="pixel-tight text-[9px] mb-3 gradient-text">OPERATIONS</p>
+                <h3 class="pixel-tight text-[11px] mb-4">AI AGENT MONITORING & EVALUATION</h3>
+                <p class="text-[28px] leading-none muted mb-4">Operational monitoring and acceptance review of AI-enabled service initiatives. Emphasis on workflow fit, quality assurance, readiness, and practicality in real operating environments.</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="retro-tag">QA Framework</span>
+                  <span class="retro-tag">Acceptance Review</span>
+                  <span class="retro-tag">Readiness</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="retro-card overflow-hidden animate-reveal stagger-3">
+              <img src="https://source.unsplash.com/900x600/?cassette,tape,walkman,vintage,retro" alt="AI Tools Training" class="project-image w-full">
+              <div class="p-6">
+                <p class="pixel-tight text-[9px] mb-3 gradient-text">ENABLEMENT</p>
+                <h3 class="pixel-tight text-[11px] mb-4">AI TOOLS TRAINING FOR WORKPLACE</h3>
+                <p class="text-[28px] leading-none muted mb-4">Developed and delivered workshops helping non-technical staff use AI tools for productivity, content creation, and safer adoption in organizational settings.</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="retro-tag">Workshops</span>
+                  <span class="retro-tag">Prompting</span>
+                  <span class="retro-tag">Safe Use</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="awards" class="px-4 md:px-6 py-16">
+        <div class="max-w-6xl mx-auto retro-card overflow-hidden animate-reveal">
+          <div class="retro-window-bar">
+            <span class="dot" style="background:#ff5f57"></span>
+            <span class="dot" style="background:#febc2e"></span>
+            <span class="dot" style="background:#28c840"></span>
+            <span class="pixel-tight text-[10px]">trophy_room.dat</span>
+          </div>
+          <div class="p-6 md:p-8">
+            <p class="section-label mb-4">Recognition</p>
+            <h2 class="pixel-title text-[18px] md:text-[28px] mb-8">Selected Awards</h2>
+            <div class="grid md:grid-cols-2 gap-5">
+              <div class="retro-card p-5 animate-reveal stagger-1"><h3 class="pixel-tight text-[10px] mb-2">WINNER — AI BOOST UP</h3><p class="text-[28px] leading-none muted">NECTEC × NSTDA · 2025</p></div>
+              <div class="retro-card p-5 animate-reveal stagger-2"><h3 class="pixel-tight text-[10px] mb-2">WINNER — BIG IDEA (1ST PLACE)</h3><p class="text-[28px] leading-none muted">NT Corporation · 2025</p></div>
+              <div class="retro-card p-5 animate-reveal stagger-2"><h3 class="pixel-tight text-[10px] mb-2">WINNER — NT KM AWARD</h3><p class="text-[28px] leading-none muted">NT Corporation · 2025</p></div>
+              <div class="retro-card p-5 animate-reveal stagger-2"><h3 class="pixel-tight text-[10px] mb-2">WINNER — NT FIT FUN FIRM</h3><p class="text-[28px] leading-none muted">NT Corporation · 2025</p></div>
+              <div class="retro-card p-5 animate-reveal stagger-3"><h3 class="pixel-tight text-[10px] mb-2">1ST RUNNER UP — NT AGENTIC AI HACKATHON</h3><p class="text-[28px] leading-none muted">NT Corporation · 2025</p></div>
+              <div class="retro-card p-5 animate-reveal stagger-3"><h3 class="pixel-tight text-[10px] mb-2">1ST RUNNER UP — STATE ENTERPRISE E-SPORTS</h3><p class="text-[28px] leading-none muted">National Level · 2023</p></div>
+              <div class="retro-card p-5 animate-reveal stagger-4"><h3 class="pixel-tight text-[10px] mb-2">FINALIST — AI*DEA</h3><p class="text-[28px] leading-none muted">NT Corporation · 2025</p></div>
+              <div class="retro-card p-5 animate-reveal stagger-4"><h3 class="pixel-tight text-[10px] mb-2">HONORABLE MENTION — NT DATA ANALYTICS HACKATHON</h3><p class="text-[28px] leading-none muted">NT Corporation · 2024</p></div>
+              <div class="retro-card p-5 animate-reveal stagger-5 md:col-span-2"><h3 class="pixel-tight text-[10px] mb-2">ROLE MODEL OFFICER RECOGNITION</h3><p class="text-[28px] leading-none muted">National Telecom Public Company Limited</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tools" class="px-4 md:px-6 py-16">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-6">
+          <div class="retro-card overflow-hidden animate-reveal-left">
+            <div class="retro-window-bar">
+              <span class="dot" style="background:#ff5f57"></span>
+              <span class="dot" style="background:#febc2e"></span>
+              <span class="dot" style="background:#28c840"></span>
+              <span class="pixel-tight text-[10px]">toolkit.inf</span>
+            </div>
+            <div class="p-6 md:p-8">
+              <p class="section-label mb-4">Arsenal</p>
+              <h2 class="pixel-title text-[18px] md:text-[26px] mb-8">Tools & Platforms</h2>
+              <div class="space-y-6">
+                <div>
+                  <h3 class="pixel-tight text-[10px] mb-3 gradient-text">CONTACT CENTER</h3>
+                  <div class="flex flex-wrap gap-3">
+                    <span class="retro-tag">Avaya</span>
+                    <span class="retro-tag">Genesys</span>
+                    <span class="retro-tag">Cisco Contact Center</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 class="pixel-tight text-[10px] mb-3 gradient-text">GENAI / CREATIVE AI</h3>
+                  <div class="flex flex-wrap gap-3">
+                    <span class="retro-tag">Sora</span>
+                    <span class="retro-tag">Gemini</span>
+                    <span class="retro-tag">Google AI Studio</span>
+                    <span class="retro-tag">Kling</span>
+                    <span class="retro-tag">Suno</span>
+                    <span class="retro-tag">Runway</span>
+                    <span class="retro-tag">Flow</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 class="pixel-tight text-[10px] mb-3 gradient-text">STANDARDS & GOVERNANCE</h3>
+                  <div class="flex flex-wrap gap-3">
+                    <span class="retro-tag">ISO 18295</span>
+                    <span class="retro-tag">PDPA-aware</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="retro-card overflow-hidden animate-reveal-right">
+            <div class="retro-window-bar">
+              <span class="dot" style="background:#ff5f57"></span>
+              <span class="dot" style="background:#febc2e"></span>
+              <span class="dot" style="background:#28c840"></span>
+              <span class="pixel-tight text-[10px]">learning_path.ini</span>
+            </div>
+            <div class="p-6 md:p-8">
+              <p class="section-label mb-4">Growth</p>
+              <h2 class="pixel-title text-[18px] md:text-[26px] mb-8">Continuous Learning</h2>
+              <div class="space-y-4">
+                <div class="retro-card p-4"><p class="pixel-tight text-[10px] mb-2">SUPER AI ENGINEER SS5</p><p class="text-[28px] leading-none muted">2025</p></div>
+                <div class="retro-card p-4"><p class="pixel-tight text-[10px] mb-2">AGENTIC AI BOOTCAMP DAYS</p><p class="text-[28px] leading-none muted">2025</p></div>
+                <div class="retro-card p-4"><p class="pixel-tight text-[10px] mb-2">AI*DEA 2025 — GENAI FOR PROCESS IMPROVEMENT</p><p class="text-[28px] leading-none muted">2025</p></div>
+                <div class="retro-card p-4"><p class="pixel-tight text-[10px] mb-2">READINESS FOR DATA ANALYTICS & AI</p><p class="text-[28px] leading-none muted">2025</p></div>
+                <div class="retro-card p-4"><p class="pixel-tight text-[10px] mb-2">NT DATA ANALYTICS HACKATHON</p><p class="text-[28px] leading-none muted">2024</p></div>
+                <div class="retro-card p-4"><p class="pixel-tight text-[10px] mb-2">APPLICATION SECURITY WITH SECURE CODING</p><p class="text-[28px] leading-none muted">2023</p></div>
+                <div class="retro-card p-4"><p class="pixel-tight text-[10px] mb-2">PDPA: ORGANIZATIONAL IMPACTS</p><p class="text-[28px] leading-none muted">2021</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="max-w-6xl mx-auto mt-6 retro-card p-6 md:p-8 animate-reveal">
+          <p class="section-label mb-3">Education</p>
+          <h3 class="pixel-tight text-[12px] mb-3">MASTER OF BUSINESS ADMINISTRATION (MANAGEMENT)</h3>
+          <p class="text-[30px] leading-none muted">Ramkhamhaeng University · 2014 · GPA 3.23</p>
+        </div>
+      </section>
+
+      <section id="contact" class="px-4 md:px-6 py-16 pb-24">
+        <div class="max-w-5xl mx-auto retro-card overflow-hidden animate-reveal">
+          <div class="retro-window-bar">
+            <span class="dot" style="background:#ff5f57"></span>
+            <span class="dot" style="background:#febc2e"></span>
+            <span class="dot" style="background:#28c840"></span>
+            <span class="pixel-tight text-[10px]">contact_portal.net</span>
+          </div>
+          <div class="p-6 md:p-10 text-center">
+            <p class="section-label mb-4">Let's Connect</p>
+            <h2 class="pixel-title text-[18px] md:text-[30px] mb-8 leading-[1.8]">
+              <span class="gradient-text">Ready to transform</span><br>
+              <span>your operations with AI?</span>
+            </h2>
+            <p class="text-[30px] leading-none muted max-w-3xl mx-auto mb-8">Looking for AI Transformation, Customer Operations Modernization, or AI Enablement opportunities. Let's talk.</p>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
+              <a href="mailto:nuttanawin@gmail.com" class="retro-btn px-6 py-4 bg-[color:var(--primary)] text-black">NUTTANAWIN@GMAIL.COM</a>
+            </div>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+              <div class="retro-card px-5 py-4"><span class="pixel-tight text-[10px]">BANGKOK, THAILAND</span></div>
+              <div class="retro-card px-5 py-4"><span class="pixel-tight text-[10px]">AI TRANSFORMATION · OPS MODERNIZATION · AI ENABLEMENT</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    </main>
+
+    <footer class="px-4 md:px-6 pb-10">
+      <div class="max-w-6xl mx-auto retro-card px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
+        <div class="pixel-tight text-[10px] gradient-text">NJ © 2025</div>
+        <div class="pixel-tight text-[10px]">RETRO AI TRANSFORMATION PORTFOLIO</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.animate-reveal, .animate-reveal-left, .animate-reveal-right').forEach(el => observer.observe(el));
+
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        nav.style.transform = 'translateY(0)';
+      }
+    });
+
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 220;
+        if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+      });
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
+      });
+    });
+
+    const body = document.body;
+    const themeButtons = document.querySelectorAll('[data-theme-choice]');
+    const savedTheme = localStorage.getItem('portfolio-theme');
+
+    const setTheme = (theme) => {
+      body.setAttribute('data-theme', theme);
+      localStorage.setItem('portfolio-theme', theme);
+      themeButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.themeChoice === theme);
+      });
+    };
+
+    if (savedTheme) setTheme(savedTheme);
+
+    themeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        setTheme(btn.dataset.themeChoice);
+      });
+    });
+  </script>
+</body>
+</html>
